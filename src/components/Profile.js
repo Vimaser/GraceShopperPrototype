@@ -43,8 +43,7 @@ const Profile = () => {
             )}
             {checkoutDetails && (
                 <div className="checkout-details">
-                    <h3>Checkout Details</h3>
-                    {/* Render your checkout details. This is just a placeholder: */}
+                    <h3>Checkout Details</h3> 
                     <div>
                         <strong>Total Purchased Items:</strong> {checkoutDetails.totalItems}
                     </div>
@@ -53,7 +52,7 @@ const Profile = () => {
                     </div>
                 </div>
             )}
-            <button onClick={() => { /* Handle logout or profile update */ }}>Logout or Update Profile</button>
+            <button onClick={() => { /* Handle logout or profile update? I'm leaving this is for further development */ }}>Logout or Update Profile</button>
         </div>
     );
 };

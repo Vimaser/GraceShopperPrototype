@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Search from './Search';
 
 const Navbar = () => {
     return (
@@ -23,6 +24,15 @@ const Navbar = () => {
                     <li className="nav-item">
                         <Link className="nav-link" to="/users/johndoe/checkout">Checkout</Link>
                     </li>
+                    <li className="nav-item">
+                        <Link className="nav-link" to="/cart">Cart</Link>
+                    </li>
+                    <li className="nav-item">
+                            <Link className="nav-link" to="/reviews">Reviews</Link>
+                    </li>
+                    <div className="navbar-search">
+                        <Search />
+                    </div>
                 </ul>
             </div>
         </nav>

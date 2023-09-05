@@ -3,7 +3,7 @@ const BASE_URL = "http://localhost:3001/api/users";
 const PRODUCTS_BASE_URL = "http://localhost:3001/api/products"; 
 const ORDERS_BASE_URL = "http://localhost:3001/api/orders"; 
 
-/* Will need the endpoints for reviews! */
+/* Will need the endpoints for reviews, cart, and ! */
 
 // Register a new user
 export const registerUser = async (username, password) => {
@@ -256,4 +256,124 @@ export const deleteOrderById = async (orderId) => {
         console.error("Error deleting order:", error);
         throw error;
     }
+};
+
+
+async function fetchWithErrors(endpoint, options) {
+    const response = await fetch(endpoint, options);
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || response.statusText);
+    }
+    return response.json();
+}
+
+// Create a new cart
+export async function createCart({userId, guestId}) {
+    return await fetchWithErrors(`${BASE_URL}/carts`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, guestId })
+    });
+}
+
+// Add an item to the cart
+export async function addItemToCart({userId, cartId, productId, quantity}) {
+    return await fetchWithErrors(`${BASE_URL}/carts/${cartId}/items`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, productId, quantity })
+    });
+}
+
+// Update cart item quantity
+export async function updateCartItemQuantity(userId, cartItemId, newQuantity) {
+    return await fetchWithErrors(`${BASE_URL}/carts/items/${cartItemId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, newQuantity })
+    });
+}
+
+// Remove an item from the cart
+export async function removeItemFromCart(userId, cartItemId) {
+    return await fetchWithErrors(`${BASE_URL}/carts/items/${cartItemId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId })
+    });
+}
+
+// Get cart by user ID
+export async function getCartByUserId(userId) {
+    return await fetchWithErrors(`${BASE_URL}/carts/user/${userId}`);
+}
+
+// Get all cart items by cart ID
+export async function getCartItemsByCartId(cartId) {
+    return await fetchWithErrors(`${BASE_URL}/carts/${cartId}/items`);
+}
+
+// In ../api/index.js or wherever your API functions are located
+
+export const searchProducts = async (query) => {
+    // Make a request to your backend, possibly using fetch
+    const response = await fetch('http://localhost:3000/api/products', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: query })
+    });
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    return response.json();
+};
+
+async function fetchReviewsByProductId(productId) {
+    const response = await fetch(`/api/reviews/${productId}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch reviews for product.');
+    }
+    return await response.json();
+}
+
+async function postReview(reviewData) {
+    const response = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reviewData)
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to post review.');
+    }
+    return await response.json();
+}
+
+async function fetchAllReviews() {
+    const response = await fetch('/api/reviews');
+    if (!response.ok) {
+        throw new Error('Failed to fetch all reviews.');
+    }
+    return await response.json();
+}
+
+export {
+    fetchReviewsByProductId,
+    postReview,
+    fetchAllReviews
 };
